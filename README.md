@@ -26,7 +26,7 @@ ccmake ..
 /usr/lib/qgis/plugins/libprovider_grass8.so
 ```
 
-##### FLEX
+##### [FLEX](https://plugins.qgis.org/plugins/flexigis/version/0.1/)
 ```
  FLEX_EXECUTABLE                  /usr/local/opt/flex/bin/flex                                                                             
  FLEX_INCLUDE_DIR                 /usr/local/opt/flex/include                                                                              
