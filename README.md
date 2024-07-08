@@ -32,6 +32,7 @@ ccmake ..
  FLEX_INCLUDE_DIR                 /usr/local/opt/flex/include                                                                              
  FL_LIBRARY                       /usr/local/opt/flex/lib/libfl.dylib 
 ```
+<img src="https://github.com/universalbit-dev/QGIS/blob/master/images/qgis_compile_source_code_ubuntu24.png" width="auto"></img>
 
 
 
