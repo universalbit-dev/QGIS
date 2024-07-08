@@ -37,6 +37,8 @@ ccmake ..
 #### How to Help Community:
 [QGIS Docker Images](https://github.com/qgis/qgis-docker?tab=readme-ov-file)
 
+---
+
 <!-- TOC generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
 
 - [Features](#features)
