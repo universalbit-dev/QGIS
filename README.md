@@ -10,6 +10,31 @@
 
 QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical information system (GIS) that runs on Unix platforms, Windows, and MacOS.
 
+## Compile Source Code:  Ubuntu 24 (Noble Numbat)   [work in progress]
+```bash
+git clone https://github.com/universalbit-dev/QGIS.git
+cd QGIS
+sudo snap install cmake --classic
+
+mkdir build-master
+cd build-master
+ccmake ..
+```
+##### [GRASS8](https://github.com/universalbit-dev/grass) 
+```
+/usr/lib/grass82/lib/libgrass_gis.8.2.so
+/usr/lib/qgis/plugins/libprovider_grass8.so
+```
+
+##### FLEX
+```
+ FLEX_EXECUTABLE                  /usr/local/opt/flex/bin/flex                                                                             
+ FLEX_INCLUDE_DIR                 /usr/local/opt/flex/include                                                                              
+ FL_LIBRARY                       /usr/local/opt/flex/lib/libfl.dylib 
+```
+
+
+
 <!-- TOC generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
 
 - [Features](#features)
