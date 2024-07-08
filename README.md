@@ -34,7 +34,8 @@ ccmake ..
 ```
 <img src="https://github.com/universalbit-dev/QGIS/blob/master/images/qgis_compile_source_code_ubuntu24.png" width="auto"></img>
 
-
+#### How to Help Community:
+[QGIS Docker Images](https://github.com/qgis/qgis-docker?tab=readme-ov-file)
 
 <!-- TOC generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
 
