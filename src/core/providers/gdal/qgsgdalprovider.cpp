@@ -42,6 +42,7 @@
 #include "qgsproviderutils.h"
 #include "qgscplerrorhandler_p.h"
 #include "qgsmetadatautils.h"
+#include "qgsgdalclouddataitems.h"
 
 #include <QImage>
 #include <QColor>
@@ -2733,7 +2734,7 @@ bool QgsGdalProviderMetadata::uriIsBlocklisted( const QString &uri ) const
 }
 
 
-QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   Q_UNUSED( flags );
   return new QgsGdalProvider( uri, options );
@@ -4625,6 +4626,14 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
 QList<Qgis::LayerType> QgsGdalProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::Raster };
+}
+
+QList<QgsDataItemProvider *> QgsGdalProviderMetadata::dataItemProviders() const
+{
+  return
+  {
+    new QgsGdalCloudDataItemProvider()
+  };
 }
 
 int QgsGdalProviderMetadata::listStyles( const QString &uri, QStringList &ids, QStringList &names,

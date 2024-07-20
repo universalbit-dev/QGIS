@@ -595,7 +595,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     const QDir baseDir = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).dir() : QDir();  //#spellok
     const QString baseFileName = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).completeBaseName() : QString();  //#spellok
 
-    auto exportFunc = [this, &subSettings, &pdfComponents, &geoPdfExporter, &settings, &baseDir, &baseFileName]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
+    QSet<QString> mutuallyExclusiveGroups;
+
+    auto exportFunc = [this, &subSettings, &pdfComponents, &geoPdfExporter, &settings, &baseDir, &baseFileName, &mutuallyExclusiveGroups]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
     {
       ExportResult layerExportResult = Success;
       QgsLayoutGeoPdfExporter::ComponentLayerDetail component;
@@ -603,7 +605,13 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       component.mapLayerId = layerDetail.mapLayerId;
       component.opacity = layerDetail.opacity;
       component.compositionMode = layerDetail.compositionMode;
-      component.group = layerDetail.mapTheme;
+      component.group = layerDetail.groupName;
+      if ( !layerDetail.mapTheme.isEmpty() )
+      {
+        component.group = layerDetail.mapTheme;
+        mutuallyExclusiveGroups.insert( layerDetail.mapTheme );
+      }
+
       component.sourcePdfPath = settings.writeGeoPdf ? geoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( layerId ) ) : baseDir.filePath( QStringLiteral( "%1_%2.pdf" ).arg( baseFileName ).arg( layerId, 4, 10, QChar( '0' ) ) );
       pdfComponents << component;
       QPdfWriter printer = QPdfWriter( component.sourcePdfPath );
@@ -620,7 +628,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       p.end();
       return layerExportResult;
     };
-    result = handleLayeredExport( items, exportFunc );
+    auto getExportGroupNameFunc = []( QgsLayoutItem * item )->QString
+    {
+      return item->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString();
+    };
+    result = handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
     if ( result != Success )
       return result;
 
@@ -632,6 +644,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       QgsLayoutSize pageSize = mLayout->pageCollection()->page( 0 )->sizeWithUnits();
       QgsLayoutSize pageSizeMM = mLayout->renderContext().measurementConverter().convert( pageSize, Qgis::LayoutUnit::Millimeters );
       details.pageSizeMm = pageSizeMM.toQSizeF();
+      details.mutuallyExclusiveGroups = mutuallyExclusiveGroups;
 
       if ( settings.exportMetadata )
       {
@@ -1104,7 +1117,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
       {
         return renderToLayeredSvg( settings, width, height, i, bounds, fileName, layerId, layerDetail.name, svg, svgDocRoot, settings.exportMetadata );
       };
-      ExportResult res = handleLayeredExport( items, exportFunc );
+      auto getExportGroupNameFunc = []( QgsLayoutItem * )->QString
+      {
+        return QString();
+      };
+      ExportResult res = handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
       if ( res != Success )
         return res;
 
@@ -1762,13 +1779,15 @@ QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned i
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QList<QGraphicsItem *> &items,
-    const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QgsLayoutItem::ExportLayerDetail & )> &exportFunc )
+    const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QgsLayoutItem::ExportLayerDetail & )> &exportFunc,
+    const std::function<QString( QgsLayoutItem *item )> &getItemExportGroupFunc )
 {
   LayoutItemHider itemHider( items );
   ( void )itemHider;
 
   int prevType = -1;
   QgsLayoutItem::ExportLayerBehavior prevItemBehavior = QgsLayoutItem::CanGroupWithAnyOtherItem;
+  QString previousItemGroup;
   unsigned int layerId = 1;
   QgsLayoutItem::ExportLayerDetail layerDetails;
   itemHider.hideAll();
@@ -1779,9 +1798,20 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
 
     bool canPlaceInExistingLayer = false;
+    QString thisItemExportGroupName;
     if ( layoutItem )
     {
-      switch ( layoutItem->exportLayerBehavior() )
+      QgsLayoutItem::ExportLayerBehavior itemExportBehavior = layoutItem->exportLayerBehavior();
+      thisItemExportGroupName = getItemExportGroupFunc( layoutItem );
+      if ( !thisItemExportGroupName.isEmpty() )
+      {
+        if ( thisItemExportGroupName != previousItemGroup && !currentLayerItems.empty() )
+          itemExportBehavior = QgsLayoutItem::MustPlaceInOwnLayer;
+        else
+          layerDetails.groupName = thisItemExportGroupName;
+      }
+
+      switch ( itemExportBehavior )
       {
         case QgsLayoutItem::CanGroupWithAnyOtherItem:
         {
@@ -1830,12 +1860,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
           canPlaceInExistingLayer = false;
           break;
       }
-      prevItemBehavior = layoutItem->exportLayerBehavior();
+      prevItemBehavior = itemExportBehavior;
       prevType = layoutItem->type();
+      previousItemGroup = thisItemExportGroupName;
     }
     else
     {
       prevItemBehavior = QgsLayoutItem::MustPlaceInOwnLayer;
+      previousItemGroup.clear();
     }
 
     if ( canPlaceInExistingLayer )
@@ -1891,6 +1923,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
       {
         currentLayerItems << item;
       }
+      layerDetails.groupName = thisItemExportGroupName;
     }
   }
   if ( !currentLayerItems.isEmpty() )

@@ -234,6 +234,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoMarginRight, //!< Right margin (since QGIS 3.30)
       UndoSetId, //!< Change item ID
       UndoRotation, //!< Rotation adjustment
+      UndoExportLayerName, //!< Export layer name (since QGIS 3.40)
       UndoShapeStyle, //!< Shape symbol style
       UndoShapeCornerRadius, //!< Shape corner radius
       UndoNodeMove, //!< Node move
@@ -464,9 +465,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     };
 
     /**
-     * Returns the behavior of this item during exporting to layered exports (e.g. SVG).
+     * Returns the behavior of this item during exporting to layered exports (e.g. SVG or GeoPDF).
+     *
      * \see numberExportLayers()
      * \see exportLayerDetails()
+     *
      * \since QGIS 3.10
      */
     virtual ExportLayerBehavior exportLayerBehavior() const;
@@ -540,6 +543,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
       //! Associated map theme, or an empty string if this export layer does not need to be associated with a map theme
       QString mapTheme;
+
+      /**
+       * Associated group name, if this layer is associated with an export group.
+       *
+       * \since QGIS 3.40
+       */
+      QString groupName;
     };
 
     /**

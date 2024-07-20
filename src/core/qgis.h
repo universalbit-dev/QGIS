@@ -347,6 +347,86 @@ class CORE_EXPORT Qgis
     Q_ENUM( PythonMacroMode )
 
     /**
+     * Flags which control data provider construction.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsDataProvider::ReadFlag
+     *
+     * \since QGIS 3.40
+     */
+    enum class DataProviderReadFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataProvider, ReadFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      TrustDataSource SIP_MONKEYPATCH_COMPAT_NAME( FlagTrustDataSource ) = 1 << 0, //!< Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load. Since QGIS 3.16
+      SkipFeatureCount = 1 << 1, //!< Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing.
+      LoadDefaultStyle SIP_MONKEYPATCH_COMPAT_NAME( FlagLoadDefaultStyle ) = 1 << 2, //!< Reset the layer's style to the default for the datasource
+      SkipGetExtent = 1 << 3, //!< Skip the extent from provider
+      SkipFullScan = 1 << 4, //!< Skip expensive full scan on files (i.e. on delimited text) (since QGIS 3.24)
+      ForceReadOnly = 1 << 5, //!< Open layer in a read-only mode (since QGIS 3.28)
+      SkipCredentialsRequest =  1 << 6, //!< Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread (since QGIS 3.32).
+      ParallelThreadLoading = 1 << 7, //!< Provider is created in a parallel thread than the one where it will live (since QGIS 3.32.1).
+    };
+    Q_ENUM( DataProviderReadFlag )
+
+    /**
+     * Flags which control data provider construction.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsDataProvider::ReadFlags
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( DataProviderReadFlags, DataProviderReadFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataProvider, ReadFlags )
+    Q_FLAG( DataProviderReadFlags )
+
+    // TODO QGIS 4 -- remove NoCapabilities and rely on VectorProviderCapabilities() instead
+
+    /**
+     * Vector data provider capabilities.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsVectorDataProvider::Capability
+     *
+     * \since QGIS 3.40
+     */
+    enum class VectorProviderCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorDataProvider, Capability ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoCapabilities = 0, //!< Provider has no capabilities
+      AddFeatures = 1, //!< Allows adding features
+      DeleteFeatures = 1 <<  1, //!< Allows deletion of features
+      ChangeAttributeValues = 1 <<  2, //!< Allows modification of attribute values
+      AddAttributes = 1 <<  3, //!< Allows addition of new attributes (fields)
+      DeleteAttributes = 1 <<  4, //!< Allows deletion of attributes (fields)
+      CreateSpatialIndex = 1 <<  6, //!< Allows creation of spatial index
+      SelectAtId = 1 <<  7, //!< Fast access to features using their ID
+      ChangeGeometries = 1 <<  8, //!< Allows modifications of geometries
+      SelectEncoding = 1 << 13, //!< Allows user to select encoding
+      CreateAttributeIndex = 1 << 12, //!< Can create indexes on provider's fields
+      SimplifyGeometries = 1 << 14, //!< Supports simplification of geometries on provider side according to a distance tolerance
+      SimplifyGeometriesWithTopologicalValidation = 1 << 15, //!< Supports topological simplification of geometries on provider side according to a distance tolerance
+      TransactionSupport = 1 << 16, //!< Supports transactions
+      CircularGeometries = 1 << 17, //!< Supports circular geometry types (circularstring, compoundcurve, curvepolygon)
+      ChangeFeatures = 1 << 18, //!< Supports joint updates for attributes and geometry. Providers supporting this should still define ChangeGeometries | ChangeAttributeValues.
+      RenameAttributes = 1 << 19, //!< Supports renaming attributes (fields). Since QGIS 2.16
+      FastTruncate = 1 << 20, //!< Supports fast truncation of the layer (removing all features). Since QGIS 3.0
+      ReadLayerMetadata = 1 << 21, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
+      WriteLayerMetadata = 1 << 22, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
+      CancelSupport = 1 << 23, //!< Supports interruption of pending queries from a separated thread. Since QGIS 3.2
+      CreateRenderer = 1 << 24, //!< Provider can create feature renderers using backend-specific formatting information. Since QGIS 3.2. See QgsVectorDataProvider::createRenderer().
+      CreateLabeling = 1 << 25, //!< Provider can set labeling settings using backend-specific formatting information. Since QGIS 3.6. See QgsVectorDataProvider::createLabeling().
+      ReloadData = 1 << 26, //!< Provider is able to force reload data
+      FeatureSymbology = 1 << 27, //!< Provider is able retrieve embedded symbology associated with individual features. Since QGIS 3.20.
+      EditingCapabilities = AddFeatures | DeleteFeatures | ChangeAttributeValues | ChangeGeometries | AddAttributes | DeleteAttributes | RenameAttributes, //!< Bitmask of all editing capabilities
+    };
+    Q_ENUM( VectorProviderCapability )
+
+    /**
+     * Vector data provider capabilities.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsVectorDataProvider::Capabilities
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( VectorProviderCapabilities, VectorProviderCapability ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsVectorDataProvider, Capabilities )
+    Q_FLAG( VectorProviderCapabilities )
+
+    /**
      * \ingroup core
      * \brief Enumeration of feature count states
      * \since QGIS 3.20
@@ -3077,6 +3157,26 @@ class CORE_EXPORT Qgis
     Q_FLAG( ProcessingAlgorithmFlags )
 
     /**
+     * Flags describing algorithm behavior for documentation purposes.
+     *
+     * \since QGIS 3.40
+     */
+    enum class ProcessingAlgorithmDocumentationFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      RegeneratesPrimaryKey = 1 << 0, //!< Algorithm always drops any existing primary keys or FID values and regenerates them in outputs
+      RegeneratesPrimaryKeyInSomeScenarios = 1 << 1, //!< Algorithm may drop the existing primary keys or FID values in some scenarios, depending on algorithm inputs and parameters
+    };
+    Q_ENUM( ProcessingAlgorithmDocumentationFlag )
+
+    /**
+     * Flags describing algorithm behavior for documentation purposes.
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( ProcessingAlgorithmDocumentationFlags, ProcessingAlgorithmDocumentationFlag )
+    Q_FLAG( ProcessingAlgorithmDocumentationFlags )
+
+    /**
      * Property availability, used for QgsProcessingAlgorithm::VectorProperties
      * in order to determine if properties are available or not.
      *
@@ -4538,6 +4638,78 @@ class CORE_EXPORT Qgis
     Q_ENUM( LayoutUnitType )
 
     /**
+     * Picture formats.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsLayoutItemPicture::Format.
+     *
+     * \since QGIS 3.40
+     */
+    enum class PictureFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemPicture, Format ) : int
+      {
+      SVG SIP_MONKEYPATCH_COMPAT_NAME( FormatSVG ) = 0, //!< SVG image
+      Raster SIP_MONKEYPATCH_COMPAT_NAME( FormatRaster ), //!< Raster image
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( FormatUnknown ), //!< Invalid or unknown image type
+    };
+    Q_ENUM( PictureFormat )
+
+    /**
+     * Scalebar alignment.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsScaleBarSettings::Alignment.
+     *
+     * \since QGIS 3.40
+     */
+    enum class ScaleBarAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsScaleBarSettings, Alignment ) : int
+      {
+      Left SIP_MONKEYPATCH_COMPAT_NAME( AlignLeft ) = 0, //!< Left aligned
+      Middle SIP_MONKEYPATCH_COMPAT_NAME( AlignMiddle ), //!< Center aligned
+      Right SIP_MONKEYPATCH_COMPAT_NAME( AlignRight ), //!< Right aligned
+    };
+    Q_ENUM( ScaleBarAlignment )
+
+    /**
+     * Modes for setting size for scale bar segments.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsScaleBarSettings::SegmentSizeMode.
+     *
+     * \since QGIS 3.40
+     */
+    enum class ScaleBarSegmentSizeMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsScaleBarSettings, SegmentSizeMode ) : int
+      {
+      Fixed SIP_MONKEYPATCH_COMPAT_NAME( SegmentSizeFixed ) = 0, //!< Scale bar segment size is fixed to a map unit
+      FitWidth SIP_MONKEYPATCH_COMPAT_NAME( SegmentSizeFitWidth ) = 1 //!< Scale bar segment size is calculated to fit a size range
+    };
+    Q_ENUM( ScaleBarSegmentSizeMode )
+
+    /**
+     * Scale bar distance label vertical placement.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsScaleBarSettings::LabelVerticalPlacement.
+     *
+     * \since QGIS 3.40
+     */
+    enum class ScaleBarDistanceLabelVerticalPlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsScaleBarSettings, LabelVerticalPlacement ) : int
+      {
+      AboveSegment SIP_MONKEYPATCH_COMPAT_NAME( LabelAboveSegment ) = 0, //!< Labels are drawn above the scalebar
+      BelowSegment SIP_MONKEYPATCH_COMPAT_NAME( LabelBelowSegment ), //!< Labels are drawn below the scalebar
+    };
+    Q_ENUM( ScaleBarDistanceLabelVerticalPlacement )
+
+    /**
+     * Scale bar distance label horizontal placement.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsScaleBarSettings::LabelHorizontalPlacement.
+     *
+     * \since QGIS 3.40
+     */
+    enum class ScaleBarDistanceLabelHorizontalPlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsScaleBarSettings, LabelHorizontalPlacement ) : int
+      {
+      CenteredEdge SIP_MONKEYPATCH_COMPAT_NAME( LabelCenteredEdge ) = 0, //!< Labels are drawn centered relative to segment's edge
+      CenteredSegment SIP_MONKEYPATCH_COMPAT_NAME( LabelCenteredSegment ), //!< Labels are drawn centered relative to segment
+    };
+    Q_ENUM( ScaleBarDistanceLabelHorizontalPlacement )
+
+    /**
      * Input controller types.
      *
      * \since QGIS 3.34
@@ -5131,6 +5303,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( SensorThingsEntity )
 
     /**
+     * Color model types
+     *
+     * \since QGIS 3.40
+     */
+    enum class ColorModel : int
+    {
+      Rgb, //!< RGB color model
+      Cmyk, //!< CMYK color model
+    };
+    Q_ENUM( ColorModel )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -5304,11 +5488,14 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterInterfaceCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmDocumentationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataItemProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorRenderingSimplificationFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderReadFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorProviderCapabilities )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

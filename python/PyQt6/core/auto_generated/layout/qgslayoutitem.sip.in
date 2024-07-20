@@ -182,6 +182,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoMarginRight,
       UndoSetId,
       UndoRotation,
+      UndoExportLayerName,
       UndoShapeStyle,
       UndoShapeCornerRadius,
       UndoNodeMove,
@@ -432,7 +433,7 @@ Sets the item's parent ``group``.
 
     virtual ExportLayerBehavior exportLayerBehavior() const;
 %Docstring
-Returns the behavior of this item during exporting to layered exports (e.g. SVG).
+Returns the behavior of this item during exporting to layered exports (e.g. SVG or GeoPDF).
 
 .. seealso:: :py:func:`numberExportLayers`
 
@@ -502,6 +503,8 @@ Moves to the next export part for a multi-layered export item, during a multi-la
       double opacity;
 
       QString mapTheme;
+
+      QString groupName;
     };
 
     virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails() const;

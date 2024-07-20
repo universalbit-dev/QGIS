@@ -75,10 +75,30 @@
             <h4>Links</h4>
             <ul>
             {% for link in obj.references %}
-                <li><a href="{{ link['url'] }}">{{ link['scheme'] if link['scheme'] not in [None, 'None', ''] else gettext('Access Link') }}</a></li>
+                <li><a href="{{ link['url'] }}">
+                    {{ link['name'] if link['name'] not in [None, 'None', '']
+                       else link['description'] if link['description'] not in [None, 'None', '']
+                       else link['scheme'] if link['scheme'] not in [None, 'None', '']
+                       else gettext('Access Link') }}
+                    {% if link['scheme'] not in [None, 'None', '']
+                       and ( link['name'] not in [None, 'None', '']
+                       or link['description'] not in [None, 'None', ''] ) %}
+                           ({{ link['scheme'] }})
+                    {% endif %}
+                </a></li>
             {% endfor %}
             {% for link in obj.uris %}
-                <li><a href="{{ link['url'] }}">{{ link['protocol'] if link['protocol'] not in [None, 'None', ''] else gettext('Access Link') }}</a></li>
+                <li><a href="{{ link['url'] }}">
+                    {{ link['name'] if link['name'] not in [None, 'None', '']
+                       else link['description'] if link['description'] not in [None, 'None', '']
+                       else link['protocol'] if link['protocol'] not in [None, 'None', '']
+                       else gettext('Access Link') }}
+                    {% if link['protocol'] not in [None, 'None', '']
+                       and ( link['name'] not in [None, 'None', '']
+                       or link['description'] not in [None, 'None', ''] ) %}
+                           ({{ link['protocol'] }})
+                    {% endif %}
+                </a></li>
             {% endfor %}
             </ul>
         </section>

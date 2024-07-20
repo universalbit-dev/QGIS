@@ -394,6 +394,126 @@ Qgis.NotForThisSession.__doc__ = "Macros will not be run for this session"
 Qgis.PythonMacroMode.__doc__ = "Authorisation to run Python Macros\n\n.. versionadded:: 3.10\n\n" + '* ``Never``: ' + Qgis.PythonMacroMode.Never.__doc__ + '\n' + '* ``Ask``: ' + Qgis.PythonMacroMode.Ask.__doc__ + '\n' + '* ``SessionOnly``: ' + Qgis.PythonMacroMode.SessionOnly.__doc__ + '\n' + '* ``Always``: ' + Qgis.PythonMacroMode.Always.__doc__ + '\n' + '* ``NotForThisSession``: ' + Qgis.PythonMacroMode.NotForThisSession.__doc__
 # --
 Qgis.PythonMacroMode.baseClass = Qgis
+QgsDataProvider.ReadFlag = Qgis.DataProviderReadFlag
+# monkey patching scoped based enum
+QgsDataProvider.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource
+QgsDataProvider.ReadFlag.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource
+QgsDataProvider.FlagTrustDataSource.is_monkey_patched = True
+QgsDataProvider.FlagTrustDataSource.__doc__ = "Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load. Since QGIS 3.16"
+QgsDataProvider.SkipFeatureCount = Qgis.DataProviderReadFlag.SkipFeatureCount
+QgsDataProvider.SkipFeatureCount.is_monkey_patched = True
+QgsDataProvider.SkipFeatureCount.__doc__ = "Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing."
+QgsDataProvider.FlagLoadDefaultStyle = Qgis.DataProviderReadFlag.LoadDefaultStyle
+QgsDataProvider.ReadFlag.FlagLoadDefaultStyle = Qgis.DataProviderReadFlag.LoadDefaultStyle
+QgsDataProvider.FlagLoadDefaultStyle.is_monkey_patched = True
+QgsDataProvider.FlagLoadDefaultStyle.__doc__ = "Reset the layer's style to the default for the datasource"
+QgsDataProvider.SkipGetExtent = Qgis.DataProviderReadFlag.SkipGetExtent
+QgsDataProvider.SkipGetExtent.is_monkey_patched = True
+QgsDataProvider.SkipGetExtent.__doc__ = "Skip the extent from provider"
+QgsDataProvider.SkipFullScan = Qgis.DataProviderReadFlag.SkipFullScan
+QgsDataProvider.SkipFullScan.is_monkey_patched = True
+QgsDataProvider.SkipFullScan.__doc__ = "Skip expensive full scan on files (i.e. on delimited text) (since QGIS 3.24)"
+QgsDataProvider.ForceReadOnly = Qgis.DataProviderReadFlag.ForceReadOnly
+QgsDataProvider.ForceReadOnly.is_monkey_patched = True
+QgsDataProvider.ForceReadOnly.__doc__ = "Open layer in a read-only mode (since QGIS 3.28)"
+QgsDataProvider.SkipCredentialsRequest = Qgis.DataProviderReadFlag.SkipCredentialsRequest
+QgsDataProvider.SkipCredentialsRequest.is_monkey_patched = True
+QgsDataProvider.SkipCredentialsRequest.__doc__ = "Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread (since QGIS 3.32)."
+QgsDataProvider.ParallelThreadLoading = Qgis.DataProviderReadFlag.ParallelThreadLoading
+QgsDataProvider.ParallelThreadLoading.is_monkey_patched = True
+QgsDataProvider.ParallelThreadLoading.__doc__ = "Provider is created in a parallel thread than the one where it will live (since QGIS 3.32.1)."
+Qgis.DataProviderReadFlag.__doc__ = "Flags which control data provider construction.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsDataProvider`.ReadFlag\n\n.. versionadded:: 3.40\n\n" + '* ``FlagTrustDataSource``: ' + Qgis.DataProviderReadFlag.TrustDataSource.__doc__ + '\n' + '* ``SkipFeatureCount``: ' + Qgis.DataProviderReadFlag.SkipFeatureCount.__doc__ + '\n' + '* ``FlagLoadDefaultStyle``: ' + Qgis.DataProviderReadFlag.LoadDefaultStyle.__doc__ + '\n' + '* ``SkipGetExtent``: ' + Qgis.DataProviderReadFlag.SkipGetExtent.__doc__ + '\n' + '* ``SkipFullScan``: ' + Qgis.DataProviderReadFlag.SkipFullScan.__doc__ + '\n' + '* ``ForceReadOnly``: ' + Qgis.DataProviderReadFlag.ForceReadOnly.__doc__ + '\n' + '* ``SkipCredentialsRequest``: ' + Qgis.DataProviderReadFlag.SkipCredentialsRequest.__doc__ + '\n' + '* ``ParallelThreadLoading``: ' + Qgis.DataProviderReadFlag.ParallelThreadLoading.__doc__
+# --
+Qgis.DataProviderReadFlag.baseClass = Qgis
+QgsDataProvider.ReadFlags = Qgis.DataProviderReadFlags
+Qgis.DataProviderReadFlags.baseClass = Qgis
+DataProviderReadFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsVectorDataProvider.Capability = Qgis.VectorProviderCapability
+# monkey patching scoped based enum
+QgsVectorDataProvider.NoCapabilities = Qgis.VectorProviderCapability.NoCapabilities
+QgsVectorDataProvider.NoCapabilities.is_monkey_patched = True
+QgsVectorDataProvider.NoCapabilities.__doc__ = "Provider has no capabilities"
+QgsVectorDataProvider.AddFeatures = Qgis.VectorProviderCapability.AddFeatures
+QgsVectorDataProvider.AddFeatures.is_monkey_patched = True
+QgsVectorDataProvider.AddFeatures.__doc__ = "Allows adding features"
+QgsVectorDataProvider.DeleteFeatures = Qgis.VectorProviderCapability.DeleteFeatures
+QgsVectorDataProvider.DeleteFeatures.is_monkey_patched = True
+QgsVectorDataProvider.DeleteFeatures.__doc__ = "Allows deletion of features"
+QgsVectorDataProvider.ChangeAttributeValues = Qgis.VectorProviderCapability.ChangeAttributeValues
+QgsVectorDataProvider.ChangeAttributeValues.is_monkey_patched = True
+QgsVectorDataProvider.ChangeAttributeValues.__doc__ = "Allows modification of attribute values"
+QgsVectorDataProvider.AddAttributes = Qgis.VectorProviderCapability.AddAttributes
+QgsVectorDataProvider.AddAttributes.is_monkey_patched = True
+QgsVectorDataProvider.AddAttributes.__doc__ = "Allows addition of new attributes (fields)"
+QgsVectorDataProvider.DeleteAttributes = Qgis.VectorProviderCapability.DeleteAttributes
+QgsVectorDataProvider.DeleteAttributes.is_monkey_patched = True
+QgsVectorDataProvider.DeleteAttributes.__doc__ = "Allows deletion of attributes (fields)"
+QgsVectorDataProvider.CreateSpatialIndex = Qgis.VectorProviderCapability.CreateSpatialIndex
+QgsVectorDataProvider.CreateSpatialIndex.is_monkey_patched = True
+QgsVectorDataProvider.CreateSpatialIndex.__doc__ = "Allows creation of spatial index"
+QgsVectorDataProvider.SelectAtId = Qgis.VectorProviderCapability.SelectAtId
+QgsVectorDataProvider.SelectAtId.is_monkey_patched = True
+QgsVectorDataProvider.SelectAtId.__doc__ = "Fast access to features using their ID"
+QgsVectorDataProvider.ChangeGeometries = Qgis.VectorProviderCapability.ChangeGeometries
+QgsVectorDataProvider.ChangeGeometries.is_monkey_patched = True
+QgsVectorDataProvider.ChangeGeometries.__doc__ = "Allows modifications of geometries"
+QgsVectorDataProvider.SelectEncoding = Qgis.VectorProviderCapability.SelectEncoding
+QgsVectorDataProvider.SelectEncoding.is_monkey_patched = True
+QgsVectorDataProvider.SelectEncoding.__doc__ = "Allows user to select encoding"
+QgsVectorDataProvider.CreateAttributeIndex = Qgis.VectorProviderCapability.CreateAttributeIndex
+QgsVectorDataProvider.CreateAttributeIndex.is_monkey_patched = True
+QgsVectorDataProvider.CreateAttributeIndex.__doc__ = "Can create indexes on provider's fields"
+QgsVectorDataProvider.SimplifyGeometries = Qgis.VectorProviderCapability.SimplifyGeometries
+QgsVectorDataProvider.SimplifyGeometries.is_monkey_patched = True
+QgsVectorDataProvider.SimplifyGeometries.__doc__ = "Supports simplification of geometries on provider side according to a distance tolerance"
+QgsVectorDataProvider.SimplifyGeometriesWithTopologicalValidation = Qgis.VectorProviderCapability.SimplifyGeometriesWithTopologicalValidation
+QgsVectorDataProvider.SimplifyGeometriesWithTopologicalValidation.is_monkey_patched = True
+QgsVectorDataProvider.SimplifyGeometriesWithTopologicalValidation.__doc__ = "Supports topological simplification of geometries on provider side according to a distance tolerance"
+QgsVectorDataProvider.TransactionSupport = Qgis.VectorProviderCapability.TransactionSupport
+QgsVectorDataProvider.TransactionSupport.is_monkey_patched = True
+QgsVectorDataProvider.TransactionSupport.__doc__ = "Supports transactions"
+QgsVectorDataProvider.CircularGeometries = Qgis.VectorProviderCapability.CircularGeometries
+QgsVectorDataProvider.CircularGeometries.is_monkey_patched = True
+QgsVectorDataProvider.CircularGeometries.__doc__ = "Supports circular geometry types (circularstring, compoundcurve, curvepolygon)"
+QgsVectorDataProvider.ChangeFeatures = Qgis.VectorProviderCapability.ChangeFeatures
+QgsVectorDataProvider.ChangeFeatures.is_monkey_patched = True
+QgsVectorDataProvider.ChangeFeatures.__doc__ = "Supports joint updates for attributes and geometry. Providers supporting this should still define ChangeGeometries | ChangeAttributeValues."
+QgsVectorDataProvider.RenameAttributes = Qgis.VectorProviderCapability.RenameAttributes
+QgsVectorDataProvider.RenameAttributes.is_monkey_patched = True
+QgsVectorDataProvider.RenameAttributes.__doc__ = "Supports renaming attributes (fields). Since QGIS 2.16"
+QgsVectorDataProvider.FastTruncate = Qgis.VectorProviderCapability.FastTruncate
+QgsVectorDataProvider.FastTruncate.is_monkey_patched = True
+QgsVectorDataProvider.FastTruncate.__doc__ = "Supports fast truncation of the layer (removing all features). Since QGIS 3.0"
+QgsVectorDataProvider.ReadLayerMetadata = Qgis.VectorProviderCapability.ReadLayerMetadata
+QgsVectorDataProvider.ReadLayerMetadata.is_monkey_patched = True
+QgsVectorDataProvider.ReadLayerMetadata.__doc__ = "Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider.layerMetadata()"
+QgsVectorDataProvider.WriteLayerMetadata = Qgis.VectorProviderCapability.WriteLayerMetadata
+QgsVectorDataProvider.WriteLayerMetadata.is_monkey_patched = True
+QgsVectorDataProvider.WriteLayerMetadata.__doc__ = "Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider.writeLayerMetadata()"
+QgsVectorDataProvider.CancelSupport = Qgis.VectorProviderCapability.CancelSupport
+QgsVectorDataProvider.CancelSupport.is_monkey_patched = True
+QgsVectorDataProvider.CancelSupport.__doc__ = "Supports interruption of pending queries from a separated thread. Since QGIS 3.2"
+QgsVectorDataProvider.CreateRenderer = Qgis.VectorProviderCapability.CreateRenderer
+QgsVectorDataProvider.CreateRenderer.is_monkey_patched = True
+QgsVectorDataProvider.CreateRenderer.__doc__ = "Provider can create feature renderers using backend-specific formatting information. Since QGIS 3.2. See QgsVectorDataProvider.createRenderer()."
+QgsVectorDataProvider.CreateLabeling = Qgis.VectorProviderCapability.CreateLabeling
+QgsVectorDataProvider.CreateLabeling.is_monkey_patched = True
+QgsVectorDataProvider.CreateLabeling.__doc__ = "Provider can set labeling settings using backend-specific formatting information. Since QGIS 3.6. See QgsVectorDataProvider.createLabeling()."
+QgsVectorDataProvider.ReloadData = Qgis.VectorProviderCapability.ReloadData
+QgsVectorDataProvider.ReloadData.is_monkey_patched = True
+QgsVectorDataProvider.ReloadData.__doc__ = "Provider is able to force reload data"
+QgsVectorDataProvider.FeatureSymbology = Qgis.VectorProviderCapability.FeatureSymbology
+QgsVectorDataProvider.FeatureSymbology.is_monkey_patched = True
+QgsVectorDataProvider.FeatureSymbology.__doc__ = "Provider is able retrieve embedded symbology associated with individual features. Since QGIS 3.20."
+QgsVectorDataProvider.EditingCapabilities = Qgis.VectorProviderCapability.EditingCapabilities
+QgsVectorDataProvider.EditingCapabilities.is_monkey_patched = True
+QgsVectorDataProvider.EditingCapabilities.__doc__ = "Bitmask of all editing capabilities"
+Qgis.VectorProviderCapability.__doc__ = "Vector data provider capabilities.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsVectorDataProvider`.Capability\n\n.. versionadded:: 3.40\n\n" + '* ``NoCapabilities``: ' + Qgis.VectorProviderCapability.NoCapabilities.__doc__ + '\n' + '* ``AddFeatures``: ' + Qgis.VectorProviderCapability.AddFeatures.__doc__ + '\n' + '* ``DeleteFeatures``: ' + Qgis.VectorProviderCapability.DeleteFeatures.__doc__ + '\n' + '* ``ChangeAttributeValues``: ' + Qgis.VectorProviderCapability.ChangeAttributeValues.__doc__ + '\n' + '* ``AddAttributes``: ' + Qgis.VectorProviderCapability.AddAttributes.__doc__ + '\n' + '* ``DeleteAttributes``: ' + Qgis.VectorProviderCapability.DeleteAttributes.__doc__ + '\n' + '* ``CreateSpatialIndex``: ' + Qgis.VectorProviderCapability.CreateSpatialIndex.__doc__ + '\n' + '* ``SelectAtId``: ' + Qgis.VectorProviderCapability.SelectAtId.__doc__ + '\n' + '* ``ChangeGeometries``: ' + Qgis.VectorProviderCapability.ChangeGeometries.__doc__ + '\n' + '* ``SelectEncoding``: ' + Qgis.VectorProviderCapability.SelectEncoding.__doc__ + '\n' + '* ``CreateAttributeIndex``: ' + Qgis.VectorProviderCapability.CreateAttributeIndex.__doc__ + '\n' + '* ``SimplifyGeometries``: ' + Qgis.VectorProviderCapability.SimplifyGeometries.__doc__ + '\n' + '* ``SimplifyGeometriesWithTopologicalValidation``: ' + Qgis.VectorProviderCapability.SimplifyGeometriesWithTopologicalValidation.__doc__ + '\n' + '* ``TransactionSupport``: ' + Qgis.VectorProviderCapability.TransactionSupport.__doc__ + '\n' + '* ``CircularGeometries``: ' + Qgis.VectorProviderCapability.CircularGeometries.__doc__ + '\n' + '* ``ChangeFeatures``: ' + Qgis.VectorProviderCapability.ChangeFeatures.__doc__ + '\n' + '* ``RenameAttributes``: ' + Qgis.VectorProviderCapability.RenameAttributes.__doc__ + '\n' + '* ``FastTruncate``: ' + Qgis.VectorProviderCapability.FastTruncate.__doc__ + '\n' + '* ``ReadLayerMetadata``: ' + Qgis.VectorProviderCapability.ReadLayerMetadata.__doc__ + '\n' + '* ``WriteLayerMetadata``: ' + Qgis.VectorProviderCapability.WriteLayerMetadata.__doc__ + '\n' + '* ``CancelSupport``: ' + Qgis.VectorProviderCapability.CancelSupport.__doc__ + '\n' + '* ``CreateRenderer``: ' + Qgis.VectorProviderCapability.CreateRenderer.__doc__ + '\n' + '* ``CreateLabeling``: ' + Qgis.VectorProviderCapability.CreateLabeling.__doc__ + '\n' + '* ``ReloadData``: ' + Qgis.VectorProviderCapability.ReloadData.__doc__ + '\n' + '* ``FeatureSymbology``: ' + Qgis.VectorProviderCapability.FeatureSymbology.__doc__ + '\n' + '* ``EditingCapabilities``: ' + Qgis.VectorProviderCapability.EditingCapabilities.__doc__
+# --
+Qgis.VectorProviderCapability.baseClass = Qgis
+QgsVectorDataProvider.Capabilities = Qgis.VectorProviderCapabilities
+Qgis.VectorProviderCapabilities.baseClass = Qgis
+VectorProviderCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsVectorDataProvider.FeatureCountState = Qgis.FeatureCountState
 # monkey patching scoped based enum
 QgsVectorDataProvider.Uncounted = Qgis.FeatureCountState.Uncounted
@@ -3081,6 +3201,14 @@ Qgis.ProcessingAlgorithmFlag.baseClass = Qgis
 QgsProcessingAlgorithm.Flags = Qgis.ProcessingAlgorithmFlags
 Qgis.ProcessingAlgorithmFlags.baseClass = Qgis
 ProcessingAlgorithmFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey.__doc__ = "Algorithm always drops any existing primary keys or FID values and regenerates them in outputs"
+Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKeyInSomeScenarios.__doc__ = "Algorithm may drop the existing primary keys or FID values in some scenarios, depending on algorithm inputs and parameters"
+Qgis.ProcessingAlgorithmDocumentationFlag.__doc__ = "Flags describing algorithm behavior for documentation purposes.\n\n.. versionadded:: 3.40\n\n" + '* ``RegeneratesPrimaryKey``: ' + Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey.__doc__ + '\n' + '* ``RegeneratesPrimaryKeyInSomeScenarios``: ' + Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKeyInSomeScenarios.__doc__
+# --
+Qgis.ProcessingAlgorithmDocumentationFlag.baseClass = Qgis
+Qgis.ProcessingAlgorithmDocumentationFlags.baseClass = Qgis
+ProcessingAlgorithmDocumentationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsProcessingAlgorithm.PropertyAvailability = Qgis.ProcessingPropertyAvailability
 # monkey patching scoped based enum
 QgsProcessingAlgorithm.NotAvailable = Qgis.ProcessingPropertyAvailability.NotAvailable
@@ -4514,6 +4642,79 @@ QgsUnitTypes.LayoutScreenUnits.__doc__ = "Unit is a screen based measurement uni
 Qgis.LayoutUnitType.__doc__ = "Types of layout units\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.LayoutUnitType.\n\n.. versionadded:: 3.30\n\n" + '* ``LayoutPaperUnits``: ' + Qgis.LayoutUnitType.PaperUnits.__doc__ + '\n' + '* ``LayoutScreenUnits``: ' + Qgis.LayoutUnitType.ScreenUnits.__doc__
 # --
 Qgis.LayoutUnitType.baseClass = Qgis
+QgsLayoutItemPicture.Format = Qgis.PictureFormat
+# monkey patching scoped based enum
+QgsLayoutItemPicture.FormatSVG = Qgis.PictureFormat.SVG
+QgsLayoutItemPicture.Format.FormatSVG = Qgis.PictureFormat.SVG
+QgsLayoutItemPicture.FormatSVG.is_monkey_patched = True
+QgsLayoutItemPicture.FormatSVG.__doc__ = "SVG image"
+QgsLayoutItemPicture.FormatRaster = Qgis.PictureFormat.Raster
+QgsLayoutItemPicture.Format.FormatRaster = Qgis.PictureFormat.Raster
+QgsLayoutItemPicture.FormatRaster.is_monkey_patched = True
+QgsLayoutItemPicture.FormatRaster.__doc__ = "Raster image"
+QgsLayoutItemPicture.FormatUnknown = Qgis.PictureFormat.Unknown
+QgsLayoutItemPicture.Format.FormatUnknown = Qgis.PictureFormat.Unknown
+QgsLayoutItemPicture.FormatUnknown.is_monkey_patched = True
+QgsLayoutItemPicture.FormatUnknown.__doc__ = "Invalid or unknown image type"
+Qgis.PictureFormat.__doc__ = "Picture formats.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsLayoutItemPicture`.Format.\n\n.. versionadded:: 3.40\n\n" + '* ``FormatSVG``: ' + Qgis.PictureFormat.SVG.__doc__ + '\n' + '* ``FormatRaster``: ' + Qgis.PictureFormat.Raster.__doc__ + '\n' + '* ``FormatUnknown``: ' + Qgis.PictureFormat.Unknown.__doc__
+# --
+Qgis.PictureFormat.baseClass = Qgis
+QgsScaleBarSettings.Alignment = Qgis.ScaleBarAlignment
+# monkey patching scoped based enum
+QgsScaleBarSettings.AlignLeft = Qgis.ScaleBarAlignment.Left
+QgsScaleBarSettings.Alignment.AlignLeft = Qgis.ScaleBarAlignment.Left
+QgsScaleBarSettings.AlignLeft.is_monkey_patched = True
+QgsScaleBarSettings.AlignLeft.__doc__ = "Left aligned"
+QgsScaleBarSettings.AlignMiddle = Qgis.ScaleBarAlignment.Middle
+QgsScaleBarSettings.Alignment.AlignMiddle = Qgis.ScaleBarAlignment.Middle
+QgsScaleBarSettings.AlignMiddle.is_monkey_patched = True
+QgsScaleBarSettings.AlignMiddle.__doc__ = "Center aligned"
+QgsScaleBarSettings.AlignRight = Qgis.ScaleBarAlignment.Right
+QgsScaleBarSettings.Alignment.AlignRight = Qgis.ScaleBarAlignment.Right
+QgsScaleBarSettings.AlignRight.is_monkey_patched = True
+QgsScaleBarSettings.AlignRight.__doc__ = "Right aligned"
+Qgis.ScaleBarAlignment.__doc__ = "Scalebar alignment.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsScaleBarSettings`.Alignment.\n\n.. versionadded:: 3.40\n\n" + '* ``AlignLeft``: ' + Qgis.ScaleBarAlignment.Left.__doc__ + '\n' + '* ``AlignMiddle``: ' + Qgis.ScaleBarAlignment.Middle.__doc__ + '\n' + '* ``AlignRight``: ' + Qgis.ScaleBarAlignment.Right.__doc__
+# --
+Qgis.ScaleBarAlignment.baseClass = Qgis
+QgsScaleBarSettings.SegmentSizeMode = Qgis.ScaleBarSegmentSizeMode
+# monkey patching scoped based enum
+QgsScaleBarSettings.SegmentSizeFixed = Qgis.ScaleBarSegmentSizeMode.Fixed
+QgsScaleBarSettings.SegmentSizeMode.SegmentSizeFixed = Qgis.ScaleBarSegmentSizeMode.Fixed
+QgsScaleBarSettings.SegmentSizeFixed.is_monkey_patched = True
+QgsScaleBarSettings.SegmentSizeFixed.__doc__ = "Scale bar segment size is fixed to a map unit"
+QgsScaleBarSettings.SegmentSizeFitWidth = Qgis.ScaleBarSegmentSizeMode.FitWidth
+QgsScaleBarSettings.SegmentSizeMode.SegmentSizeFitWidth = Qgis.ScaleBarSegmentSizeMode.FitWidth
+QgsScaleBarSettings.SegmentSizeFitWidth.is_monkey_patched = True
+QgsScaleBarSettings.SegmentSizeFitWidth.__doc__ = "Scale bar segment size is calculated to fit a size range"
+Qgis.ScaleBarSegmentSizeMode.__doc__ = "Modes for setting size for scale bar segments.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsScaleBarSettings`.SegmentSizeMode.\n\n.. versionadded:: 3.40\n\n" + '* ``SegmentSizeFixed``: ' + Qgis.ScaleBarSegmentSizeMode.Fixed.__doc__ + '\n' + '* ``SegmentSizeFitWidth``: ' + Qgis.ScaleBarSegmentSizeMode.FitWidth.__doc__
+# --
+Qgis.ScaleBarSegmentSizeMode.baseClass = Qgis
+QgsScaleBarSettings.LabelVerticalPlacement = Qgis.ScaleBarDistanceLabelVerticalPlacement
+# monkey patching scoped based enum
+QgsScaleBarSettings.LabelAboveSegment = Qgis.ScaleBarDistanceLabelVerticalPlacement.AboveSegment
+QgsScaleBarSettings.LabelVerticalPlacement.LabelAboveSegment = Qgis.ScaleBarDistanceLabelVerticalPlacement.AboveSegment
+QgsScaleBarSettings.LabelAboveSegment.is_monkey_patched = True
+QgsScaleBarSettings.LabelAboveSegment.__doc__ = "Labels are drawn above the scalebar"
+QgsScaleBarSettings.LabelBelowSegment = Qgis.ScaleBarDistanceLabelVerticalPlacement.BelowSegment
+QgsScaleBarSettings.LabelVerticalPlacement.LabelBelowSegment = Qgis.ScaleBarDistanceLabelVerticalPlacement.BelowSegment
+QgsScaleBarSettings.LabelBelowSegment.is_monkey_patched = True
+QgsScaleBarSettings.LabelBelowSegment.__doc__ = "Labels are drawn below the scalebar"
+Qgis.ScaleBarDistanceLabelVerticalPlacement.__doc__ = "Scale bar distance label vertical placement.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsScaleBarSettings`.LabelVerticalPlacement.\n\n.. versionadded:: 3.40\n\n" + '* ``LabelAboveSegment``: ' + Qgis.ScaleBarDistanceLabelVerticalPlacement.AboveSegment.__doc__ + '\n' + '* ``LabelBelowSegment``: ' + Qgis.ScaleBarDistanceLabelVerticalPlacement.BelowSegment.__doc__
+# --
+Qgis.ScaleBarDistanceLabelVerticalPlacement.baseClass = Qgis
+QgsScaleBarSettings.LabelHorizontalPlacement = Qgis.ScaleBarDistanceLabelHorizontalPlacement
+# monkey patching scoped based enum
+QgsScaleBarSettings.LabelCenteredEdge = Qgis.ScaleBarDistanceLabelHorizontalPlacement.CenteredEdge
+QgsScaleBarSettings.LabelHorizontalPlacement.LabelCenteredEdge = Qgis.ScaleBarDistanceLabelHorizontalPlacement.CenteredEdge
+QgsScaleBarSettings.LabelCenteredEdge.is_monkey_patched = True
+QgsScaleBarSettings.LabelCenteredEdge.__doc__ = "Labels are drawn centered relative to segment's edge"
+QgsScaleBarSettings.LabelCenteredSegment = Qgis.ScaleBarDistanceLabelHorizontalPlacement.CenteredSegment
+QgsScaleBarSettings.LabelHorizontalPlacement.LabelCenteredSegment = Qgis.ScaleBarDistanceLabelHorizontalPlacement.CenteredSegment
+QgsScaleBarSettings.LabelCenteredSegment.is_monkey_patched = True
+QgsScaleBarSettings.LabelCenteredSegment.__doc__ = "Labels are drawn centered relative to segment"
+Qgis.ScaleBarDistanceLabelHorizontalPlacement.__doc__ = "Scale bar distance label horizontal placement.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsScaleBarSettings`.LabelHorizontalPlacement.\n\n.. versionadded:: 3.40\n\n" + '* ``LabelCenteredEdge``: ' + Qgis.ScaleBarDistanceLabelHorizontalPlacement.CenteredEdge.__doc__ + '\n' + '* ``LabelCenteredSegment``: ' + Qgis.ScaleBarDistanceLabelHorizontalPlacement.CenteredSegment.__doc__
+# --
+Qgis.ScaleBarDistanceLabelHorizontalPlacement.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.InputControllerType.Map2D.__doc__ = "2D map controller"
 Qgis.InputControllerType.Map3D.__doc__ = "3D map controller"
@@ -5062,6 +5263,12 @@ Qgis.SensorThingsEntity.MultiDatastream.__doc__ = "A MultiDatastream groups a co
 Qgis.SensorThingsEntity.__doc__ = "OGC SensorThings API entity types.\n\n.. versionadded:: 3.36\n\n" + '* ``Invalid``: ' + Qgis.SensorThingsEntity.Invalid.__doc__ + '\n' + '* ``Thing``: ' + Qgis.SensorThingsEntity.Thing.__doc__ + '\n' + '* ``Location``: ' + Qgis.SensorThingsEntity.Location.__doc__ + '\n' + '* ``HistoricalLocation``: ' + Qgis.SensorThingsEntity.HistoricalLocation.__doc__ + '\n' + '* ``Datastream``: ' + Qgis.SensorThingsEntity.Datastream.__doc__ + '\n' + '* ``Sensor``: ' + Qgis.SensorThingsEntity.Sensor.__doc__ + '\n' + '* ``ObservedProperty``: ' + Qgis.SensorThingsEntity.ObservedProperty.__doc__ + '\n' + '* ``Observation``: ' + Qgis.SensorThingsEntity.Observation.__doc__ + '\n' + '* ``FeatureOfInterest``: ' + Qgis.SensorThingsEntity.FeatureOfInterest.__doc__ + '\n' + '* ``MultiDatastream``: ' + Qgis.SensorThingsEntity.MultiDatastream.__doc__
 # --
 Qgis.SensorThingsEntity.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ColorModel.Rgb.__doc__ = "RGB color model"
+Qgis.ColorModel.Cmyk.__doc__ = "CMYK color model"
+Qgis.ColorModel.__doc__ = "Color model types\n\n.. versionadded:: 3.40\n\n" + '* ``Rgb``: ' + Qgis.ColorModel.Rgb.__doc__ + '\n' + '* ``Cmyk``: ' + Qgis.ColorModel.Cmyk.__doc__
+# --
+Qgis.ColorModel.baseClass = Qgis
 from enum import Enum
 
 
@@ -5093,3 +5300,5 @@ Qgis.ProcessingParameterTypeFlag.__or__ = lambda flag1, flag2: Qgis.ProcessingPa
 Qgis.ProcessingParameterFlag.__or__ = lambda flag1, flag2: Qgis.ProcessingParameterFlags(_force_int(flag1) | _force_int(flag2))
 Qgis.DataItemProviderCapability.__or__ = lambda flag1, flag2: Qgis.DataItemProviderCapabilities(_force_int(flag1) | _force_int(flag2))
 Qgis.VectorRenderingSimplificationFlag.__or__ = lambda flag1, flag2: Qgis.VectorRenderingSimplificationFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.DataProviderReadFlag.__or__ = lambda flag1, flag2: Qgis.DataProviderReadFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.VectorProviderCapability.__or__ = lambda flag1, flag2: Qgis.VectorProviderCapabilities(_force_int(flag1) | _force_int(flag2))
