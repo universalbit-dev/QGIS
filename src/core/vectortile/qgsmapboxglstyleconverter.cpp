@@ -229,6 +229,8 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   QgsPropertyCollection ddProperties;
   QgsPropertyCollection ddRasterProperties;
 
+  bool colorIsDataDefined = false;
+
   std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsFillSymbol >() );
 
   // fill color
@@ -244,6 +246,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
+        colorIsDataDefined = true;
         ddProperties.setProperty( QgsSymbolLayer::Property::FillColor, parseValueList( jsonFillColor.toList(), PropertyType::Color, context, 1, 255, &fillColor ) );
         break;
 
@@ -457,6 +460,10 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   {
     fillSymbol->setFillColor( fillColor );
   }
+  else if ( colorIsDataDefined )
+  {
+    fillSymbol->setFillColor( QColor( Qt::transparent ) );
+  }
   else
   {
     fillSymbol->setBrushStyle( Qt::NoBrush );
@@ -556,16 +563,28 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         break;
 
       case QMetaType::Type::QVariantMap:
+      {
         lineWidth = -1;
         lineWidthProperty = parseInterpolateByZoom( jsonLineWidth.toMap(), context, context.pixelSizeConversionFactor(), &lineWidth );
         ddProperties.setProperty( QgsSymbolLayer::Property::StrokeWidth, lineWidthProperty );
+        // set symbol layer visibility depending on line width since QGIS displays line with 0 width as hairlines
+        QgsProperty layerEnabledProperty = QgsProperty( lineWidthProperty );
+        layerEnabledProperty.setExpressionString( QStringLiteral( "(%1) > 0" ).arg( lineWidthProperty.expressionString() ) );
+        ddProperties.setProperty( QgsSymbolLayer::Property::LayerEnabled, layerEnabledProperty );
         break;
+      }
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
+      {
         lineWidthProperty = parseValueList( jsonLineWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &lineWidth );
         ddProperties.setProperty( QgsSymbolLayer::Property::StrokeWidth, lineWidthProperty );
+        // set symbol layer visibility depending on line width since QGIS displays line with 0 width as hairlines
+        QgsProperty layerEnabledProperty = QgsProperty( lineWidthProperty );
+        layerEnabledProperty.setExpressionString( QStringLiteral( "(%1) > 0" ).arg( lineWidthProperty.expressionString() ) );
+        ddProperties.setProperty( QgsSymbolLayer::Property::LayerEnabled, layerEnabledProperty );
         break;
+      }
 
       default:
         context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-width type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonLineWidth.userType() ) ) ) );
@@ -2459,43 +2478,40 @@ QString QgsMapBoxGlStyleConverter::parseArrayStops( const QVariantList &stops, Q
   if ( stops.length() < 2 )
     return QString();
 
-  QString caseString = QStringLiteral( "CASE " );
+  QString caseString = QStringLiteral( "CASE" );
 
-  for ( int i = 0; i < stops.length() - 1; ++i )
+  for ( int i = 0; i < stops.length(); ++i )
   {
-    // bottom zoom and value
-    const QVariant bz = stops.value( i ).toList().value( 0 );
-    const QList<QVariant> bv = stops.value( i ).toList().value( 1 ).toList();
-    QStringList bl;
+    caseString += QLatin1String( " WHEN " );
+    QStringList conditions;
+    if ( i > 0 )
+    {
+      const QVariant bottomZoom = stops.value( i ).toList().value( 0 );
+      conditions << QStringLiteral( "@vector_tile_zoom > %1" ).arg( bottomZoom.toString() );
+    }
+    if ( i < stops.length() - 1 )
+    {
+      const QVariant topZoom = stops.value( i + 1 ).toList().value( 0 );
+      conditions << QStringLiteral( "@vector_tile_zoom <= %1" ).arg( topZoom.toString() );
+    }
+
+    const QVariantList values = stops.value( i ).toList().value( 1 ).toList();
+    QStringList valuesFixed;
     bool ok = false;
-    for ( const QVariant &value : bv )
+    for ( const QVariant &value : values )
     {
       const double number = value.toDouble( &ok );
       if ( ok )
-        bl << QString::number( number * multiplier );
+        valuesFixed << QString::number( number * multiplier );
     }
 
     // top zoom and value
-    const QVariant tz = stops.value( i + 1 ).toList().value( 0 );
-    caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
-                                  "THEN array(%3) " ).arg( bz.toString(),
-                                      tz.toString(),
-                                      bl.join( ',' ) );
+    caseString += QStringLiteral( "%1 THEN array(%3)" ).arg(
+                    conditions.join( QStringLiteral( " AND " ) ),
+                    valuesFixed.join( ',' )
+                  );
   }
-  const QVariant lz = stops.value( stops.length() - 1 ).toList().value( 0 );
-  const QList<QVariant> lv = stops.value( stops.length() - 1 ).toList().value( 1 ).toList();
-  QStringList ll;
-  bool ok = false;
-  for ( const QVariant &value : lv )
-  {
-    const double number = value.toDouble( &ok );
-    if ( ok )
-      ll << QString::number( number * multiplier );
-  }
-  caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 "
-                                "THEN array(%2) " ).arg( lz.toString(),
-                                    ll.join( ',' ) );
-  caseString += QLatin1String( "END" );
+  caseString += QLatin1String( " END" );
   return caseString;
 }
 
@@ -2679,7 +2695,12 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
 
   for ( int i = 2; i < json.length() - 1; i += 2 )
   {
-    const QVariantList keys = json.value( i ).toList();
+    QVariantList keys;
+    QVariant variantKeys = json.value( i );
+    if ( variantKeys.canConvert< QVariantList >() )
+      keys = variantKeys.toList();
+    else
+      keys = {variantKeys};
 
     QStringList matchString;
     for ( const QVariant &key : keys )
@@ -2865,7 +2886,7 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double
     context = *contextPtr;
   }
 
-  // special case!
+  // special case where min = max !
   if ( valueMin.canConvert( QMetaType::Double ) && valueMax.canConvert( QMetaType::Double ) )
   {
     bool minDoubleOk = true;
@@ -2880,40 +2901,42 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double
 
   QString minValueExpr = valueMin.toString();
   QString maxValueExpr = valueMax.toString();
-  if ( ( QMetaType::Type )valueMin.userType() == QMetaType::QVariantList )
+  if ( valueMin.userType() == QMetaType::Type::QVariantList )
   {
     minValueExpr = parseExpression( valueMin.toList(), context );
   }
-  if ( ( QMetaType::Type )valueMax.userType() == QMetaType::QVariantList )
+  if ( valueMax.userType() == QMetaType::Type::QVariantList )
   {
     maxValueExpr = parseExpression( valueMax.toList(), context );
   }
 
+  QString expression;
   if ( minValueExpr == maxValueExpr )
   {
-    return minValueExpr;
-  }
-
-  QString expression;
-  if ( base == 1 )
-  {
-    expression = QStringLiteral( "scale_linear(@vector_tile_zoom,%1,%2,%3,%4)" ).arg( zoomMin )
-                 .arg( zoomMax )
-                 .arg( minValueExpr )
-                 .arg( maxValueExpr );
+    expression = minValueExpr;
   }
   else
   {
-    // use formula to scale value exponentially as scale_exp expression function
-    // gives wrong resutls, see https://github.com/qgis/QGIS/pull/53164
-    QString ratioExpr = QStringLiteral( "(%1^(@vector_tile_zoom - %2) - 1) / (%1^(%3 - %2) - 1)" ).arg( base ).arg( zoomMin ).arg( zoomMax );
-    expression = QStringLiteral( "(%1) + (%2) * ((%3) - (%1))" ).arg( minValueExpr ).arg( ratioExpr ).arg( maxValueExpr );
-    // can be uncommented when scale_exponential expression function gets to the old LTR
-    //expression = QStringLiteral( "scale_exponential(@vector_tile_zoom,%1,%2,%3,%4,%5)" ).arg( zoomMin )
-    //             .arg( zoomMax )
-    //             .arg( minValueExpr )
-    //             .arg( maxValueExpr )
-    //             .arg( base );
+    if ( base == 1 )
+    {
+      expression = QStringLiteral( "scale_linear(@vector_tile_zoom,%1,%2,%3,%4)" ).arg( zoomMin )
+                   .arg( zoomMax )
+                   .arg( minValueExpr )
+                   .arg( maxValueExpr );
+    }
+    else
+    {
+      // use formula to scale value exponentially as scale_exp expression function
+      // gives wrong resutls, see https://github.com/qgis/QGIS/pull/53164
+      QString ratioExpr = QStringLiteral( "(%1^(@vector_tile_zoom - %2) - 1) / (%1^(%3 - %2) - 1)" ).arg( base ).arg( zoomMin ).arg( zoomMax );
+      expression = QStringLiteral( "(%1) + (%2) * ((%3) - (%1))" ).arg( minValueExpr ).arg( ratioExpr ).arg( maxValueExpr );
+      // can be uncommented when scale_exponential expression function gets to the old LTR
+      //expression = QStringLiteral( "scale_exponential(@vector_tile_zoom,%1,%2,%3,%4,%5)" ).arg( zoomMin )
+      //             .arg( zoomMax )
+      //             .arg( minValueExpr )
+      //             .arg( maxValueExpr )
+      //             .arg( base );
+    }
   }
 
   if ( multiplier != 1 )
@@ -3104,6 +3127,19 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   else if ( op == QLatin1String( "to-string" ) )
   {
     return QStringLiteral( "to_string(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
+  }
+  else if ( op == QLatin1String( "case" ) )
+  {
+    QString caseString = QStringLiteral( "CASE" );
+    for ( int i = 1; i < expression.size() - 2; i += 2 )
+    {
+      const QString condition = parseExpression( expression.value( i ).toList(), context );
+      const QString value = parseValue( expression.value( i + 1 ), context );
+      caseString += QStringLiteral( " WHEN (%1) THEN %2" ).arg( condition, value );
+    }
+    const QString value = parseValue( expression.constLast(), context );
+    caseString += QStringLiteral( " ELSE %1 END" ).arg( value );
+    return caseString;
   }
   else
   {

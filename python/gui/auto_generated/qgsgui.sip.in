@@ -29,7 +29,6 @@ related to GUI classes.
     };
 
 
-
     static QgsGui *instance();
 %Docstring
 Returns a pointer to the singleton instance.
@@ -241,6 +240,7 @@ Returns the screen at the given global ``point`` (pixel).
 
 .. versionadded:: 3.10
 %End
+
 
 
 

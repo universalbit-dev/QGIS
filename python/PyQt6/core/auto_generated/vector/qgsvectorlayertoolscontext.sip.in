@@ -24,17 +24,8 @@ consider.
   public:
 
     QgsVectorLayerToolsContext();
-%Docstring
-Constructor for QgsVectorLayerToolsContext.
-%End
 
     QgsVectorLayerToolsContext( const QgsVectorLayerToolsContext &other );
-%Docstring
-Copy constructor.
-
-:param other: source QgsVectorLayerToolsContext
-%End
-
 
     void setExpressionContext( const QgsExpressionContext *context );
 %Docstring

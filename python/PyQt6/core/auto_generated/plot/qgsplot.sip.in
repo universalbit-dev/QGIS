@@ -29,9 +29,6 @@ Base class for plot/chart/graphs.
   public:
 
     QgsPlot();
-%Docstring
-Constructor for QgsPlot.
-%End
 
     virtual ~QgsPlot();
 
@@ -260,9 +257,6 @@ Constructor for Qgs2DPlot.
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
-%Docstring
-Qgs2DPlot cannot be copied
-%End
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 

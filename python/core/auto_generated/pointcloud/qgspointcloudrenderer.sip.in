@@ -41,7 +41,6 @@ taken from the point cloud index.
 %End
 
 
-
     QgsRenderContext &renderContext();
 %Docstring
 Returns a reference to the context's render context.
@@ -194,9 +193,6 @@ Abstract base class for 2d point cloud renderers.
   public:
 
     QgsPointCloudRenderer();
-%Docstring
-Constructor for QgsPointCloudRenderer.
-%End
 
     virtual ~QgsPointCloudRenderer();
 

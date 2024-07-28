@@ -64,7 +64,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     class LayerProperties
     {
       public:
-        //! Constructor
+
         LayerProperties() = default;
 
         //! Layer name
@@ -99,9 +99,7 @@ class CORE_EXPORT QgsGmlStreamingParser
                            bool invertAxisOrientation = false );
     ~QgsGmlStreamingParser();
 
-    //! QgsGmlStreamingParser cannot be copied.
     QgsGmlStreamingParser( const QgsGmlStreamingParser &other ) = delete;
-    //! QgsGmlStreamingParser cannot be copied.
     QgsGmlStreamingParser &operator=( const QgsGmlStreamingParser &other ) = delete;
 
     /**

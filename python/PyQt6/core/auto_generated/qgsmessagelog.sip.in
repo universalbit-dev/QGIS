@@ -31,9 +31,6 @@ window for the user.
   public:
 
     QgsMessageLog();
-%Docstring
-Constructor for QgsMessageLog.
-%End
 
     static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true );
 %Docstring
@@ -94,7 +91,6 @@ Constructor for QgsMessageLogNotifyBlocker.
 
 This will block the log from emitting the messageReceived( bool ) signal for the lifetime of this object.
 %End
-
 
 
     ~QgsMessageLogNotifyBlocker();

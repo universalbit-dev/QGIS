@@ -73,10 +73,7 @@ class GUI_EXPORT QgsGui : public QObject
     };
     Q_ENUM( ProjectCrsBehavior )
 
-    //! QgsGui cannot be copied
     QgsGui( const QgsGui &other ) = delete;
-
-    //! QgsGui cannot be copied
     QgsGui &operator=( const QgsGui &other ) = delete;
 
     /**
@@ -295,6 +292,14 @@ class GUI_EXPORT QgsGui : public QObject
      * \param messageBar the message bar must be provided if a lambda method is used.
      */
     static bool pythonMacroAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
+
+    /**
+     * Initializes callout widgets.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.40
+     */
+    static void initCalloutWidgets() SIP_SKIP;
 
     ///@cond PRIVATE
     void emitOptionsChanged() SIP_SKIP;

@@ -69,14 +69,8 @@ Returns the diagram property definitions.
 %End
 
     QgsDiagramLayerSettings();
-%Docstring
-Constructor for QgsDiagramLayerSettings.
-%End
 
     QgsDiagramLayerSettings( const QgsDiagramLayerSettings &rh );
-%Docstring
-Copy constructor
-%End
 
 
     ~QgsDiagramLayerSettings();
@@ -328,15 +322,8 @@ QgsDiagramLayerSettings stores settings which control how ALL diagrams within a 
     };
 
     QgsDiagramSettings();
-%Docstring
-Constructor for QgsDiagramSettings
-%End
     ~QgsDiagramSettings();
-
     QgsDiagramSettings( const QgsDiagramSettings &other );
-%Docstring
-Copy constructor
-%End
 
 
     bool enabled;
@@ -604,9 +591,6 @@ Evaluates and returns the diagram settings relating to a diagram for a specific 
   public:
 
     QgsDiagramRenderer();
-%Docstring
-Constructor for QgsDiagramRenderer.
-%End
     virtual ~QgsDiagramRenderer();
 
     virtual QgsDiagramRenderer *clone() const = 0 /Factory/;
@@ -744,9 +728,6 @@ Renders the diagrams for all features with the same settings
   public:
 
     QgsSingleCategoryDiagramRenderer();
-%Docstring
-Constructor for QgsSingleCategoryDiagramRenderer
-%End
 
     virtual QgsSingleCategoryDiagramRenderer *clone() const /Factory/;
 
@@ -787,9 +768,6 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
     QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
-%Docstring
-Copy constructor
-%End
 
 
     virtual QgsLinearlyInterpolatedDiagramRenderer *clone() const /Factory/;

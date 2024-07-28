@@ -47,6 +47,7 @@ Returns a dataset index within :py:func:`~QgsMeshDatasetIndex.group`
 %Docstring
 Returns whether index is valid, ie at least groups is set
 %End
+
     bool operator == ( QgsMeshDatasetIndex other ) const;
     bool operator != ( QgsMeshDatasetIndex other ) const;
 };
@@ -274,7 +275,6 @@ std.numeric_limits<double>.quiet_NaN() represents NODATA value
 %Docstring
 Constructs an invalid block
 %End
-
     ~QgsMesh3DDataBlock();
 
     QgsMesh3DDataBlock( int count, bool isVector );
@@ -586,10 +586,8 @@ Abstract class that represents a dataset
 #include "qgsmeshdataset.h"
 %End
   public:
+
     QgsMeshDataset();
-%Docstring
-Constructor
-%End
 
     virtual ~QgsMeshDataset();
 
@@ -647,9 +645,6 @@ Abstract class that represents a dataset group
     };
 
     QgsMeshDatasetGroup();
-%Docstring
-Default constructor
-%End
     virtual ~QgsMeshDatasetGroup();
 
     QgsMeshDatasetGroup( const QString &name );

@@ -43,7 +43,6 @@ class CORE_EXPORT QgsElevationMap
 {
   public:
 
-    //! Default constructor
     QgsElevationMap() = default;
 
     //! Constructs an elevation map with the given width and height
@@ -58,7 +57,6 @@ class CORE_EXPORT QgsElevationMap
      */
     explicit QgsElevationMap( const QImage &image );
 
-    //! Copy constructor
     QgsElevationMap( const QgsElevationMap &other );
 
     /**

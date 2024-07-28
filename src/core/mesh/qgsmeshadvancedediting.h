@@ -39,9 +39,7 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
 {
   public:
 
-    //! Constructor
     QgsMeshAdvancedEditing();
-    //! Destructor
     virtual ~QgsMeshAdvancedEditing();
 
     //! Sets the input vertices indexes that will be used for the editing
@@ -97,7 +95,6 @@ class CORE_EXPORT QgsMeshEditRefineFaces : public QgsMeshAdvancedEditing
 {
   public:
 
-    //! Constructor
     QgsMeshEditRefineFaces();
 
     QString text() const override;
@@ -163,7 +160,6 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
 {
   public:
 
-    //! Constructor
     QgsMeshTransformVerticesByExpression() = default;
 
     QString text() const override;
