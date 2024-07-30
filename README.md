@@ -9,6 +9,11 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5869837.svg)](https://doi.org/10.5281/zenodo.5869837)
 
 QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical information system (GIS) that runs on Unix platforms, Windows, and MacOS.
+---
+Installation (easy-way):
+#### [Precompiled Binary](https://github.com/universalbit-dev/QGIS/blob/master/README.md#installing-and-using-qgis)
+#### [The Easy Way](https://www.qgis.org/download/)
+---
 
 ##### [GRASS8](https://github.com/universalbit-dev/grass) 
 ```
