@@ -11,7 +11,7 @@
 QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical information system (GIS) that runs on Unix platforms, Windows, and MacOS.
 ---
 Installation (easy-way):
-#### [Precompiled Binary](https://github.com/universalbit-dev/QGIS/blob/master/README.md#installing-and-using-qgis)
+#### [Precompiled binaries](https://github.com/universalbit-dev/QGIS/blob/master/README.md#installing-and-using-qgis)
 #### [The Easy Way](https://www.qgis.org/download/)
 ---
 
